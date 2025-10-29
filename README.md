@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # WhatsApp Clone Backend
 
 A backend server implementation for a WhatsApp-like messaging application.
@@ -13,27 +12,54 @@ A backend server implementation for a WhatsApp-like messaging application.
 
 ## Tech Stack
 
-- Node.js
-- Express.js
-- MongoDB
-- Socket.io
-- JWT Authentication
+- Go
+- gin-gonic/gin (HTTP framework)
+- PostgreSQL (or other SQL database; configurable via internal/config)
+- Redis (cache / pub-sub)
+- Apache Kafka (event streaming)
+- WebSockets (real-time messaging)
+- JWT (authentication)
+- Docker & Docker Compose
 
 ## Installation
+### Prerequisites
+
+- Go 1.20 or higher
+- Docker and Docker Compose
+- PostgreSQL
+- Redis
+- Apache Kafka
+
+### Steps
 
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/whatsapp-clone-backend.git
 
-# Install dependencies
+# Navigate to project directory
 cd whatsapp-clone-backend
-npm install
+
+# Install Go dependencies
+go mod download
 
 # Configure environment variables
 cp .env.example .env
 
-# Start the server
-npm start
+# Start infrastructure services
+docker-compose up -d
+
+# Run the server
+go run cmd/server/main.go
+```
+
+For development:
+
+```bash
+# Run tests
+go test ./...
+
+# Build binary
+go build -o whatsapp-server cmd/server/main.go
 ```
 
 ## API Endpoints
@@ -43,13 +69,6 @@ npm start
 - `GET /api/chats` - Get user chats
 - `POST /api/messages` - Send message
 
-## Environment Variables
-
-```
-PORT=3000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-```
 
 ## Contributing
 
@@ -62,6 +81,3 @@ JWT_SECRET=your_jwt_secret
 ## License
 
 MIT
-=======
-# whatsapp-clone-backend
->>>>>>> 16e8cbec839ce4940c872e124b79f8f22020b6cd
