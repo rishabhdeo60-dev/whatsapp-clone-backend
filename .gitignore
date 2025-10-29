@@ -1,0 +1,8 @@
+.env
+/bin
+/data
+/.idea
+/.vscode
+Makefile
+go.mod
+go.sum
