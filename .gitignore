@@ -1,8 +1,13 @@
+# Environment file
 .env
+
+# Go file and folders
 /bin
 /data
-/.idea
-/.vscode
 Makefile
 go.mod
 go.sum
+
+# IDE file and folders
+/.idea
+/.vscode
