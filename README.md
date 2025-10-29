@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # WhatsApp Clone Backend
 
 A backend server implementation for a WhatsApp-like messaging application.
@@ -61,3 +62,6 @@ JWT_SECRET=your_jwt_secret
 ## License
 
 MIT
+=======
+# whatsapp-clone-backend
+>>>>>>> 16e8cbec839ce4940c872e124b79f8f22020b6cd
