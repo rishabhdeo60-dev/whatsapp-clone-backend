@@ -32,24 +32,24 @@ func (m *MockUserRepository) FindByEmail(ctx context.Context, email string) (*mo
 	return args.Get(0).(*model.User), args.Error(1)
 }
 
-func (m *MockUserRepository) FindByID(ctx context.Context, userID int) (*model.User, error) {
+func (m *MockUserRepository) FindByID(ctx context.Context, userID int64) (*model.User, error) {
 	args := m.Called(userID)
 	return args.Get(0).(*model.User), args.Error(1)
 }
 
 type MockContactRepository struct{ mock.Mock }
 
-func (m *MockContactRepository) AddContact(ctx context.Context, userID, contactID int) error {
+func (m *MockContactRepository) AddContact(ctx context.Context, userID, contactID int64) error {
 	args := m.Called(ctx, userID, contactID)
 	return args.Error(0)
 }
 
-func (m *MockContactRepository) GetContacts(ctx context.Context, userID int) ([]*model.Contact, error) {
+func (m *MockContactRepository) GetContacts(ctx context.Context, userID int64) ([]*model.Contact, error) {
 	args := m.Called(ctx, userID)
 	return args.Get(0).([]*model.Contact), args.Error(1)
 }
 
-func (m *MockContactRepository) RemoveContact(ctx context.Context, userID, contactID int) error {
+func (m *MockContactRepository) RemoveContact(ctx context.Context, userID, contactID int64) error {
 	args := m.Called(ctx, userID, contactID)
 	return args.Error(0)
 }

@@ -11,3 +11,6 @@ go.sum
 # IDE file and folders
 /.idea
 /.vscode
+
+# Ignore swagger docs files
+/docs

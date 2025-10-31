@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -105,7 +106,8 @@ func (a *authService) loginByUsername(username string, password string) (string,
 	if !utils.CheckPasswordHash(password, foundUser.Password) {
 		return "", errors.New("invalid password")
 	}
-	token, _ := utils.GenerateJWT(foundUser.ID)
+	log.Printf("User %s logged in successfully and user ID is: %d", foundUser.Username, foundUser.ID)
+	token, _ := utils.GenerateJWTwithIDUsernameName(foundUser.ID, foundUser.Username, foundUser.Name)
 	return token, nil
 }
 func (a *authService) loginByEmail(email string, password string) (string, error) {
@@ -116,7 +118,7 @@ func (a *authService) loginByEmail(email string, password string) (string, error
 	if !utils.CheckPasswordHash(password, foundUser.Password) {
 		return "", errors.New("invalid password: " + password + " hashed password: " + foundUser.Password + " email: " + email)
 	}
-	token, _ := utils.GenerateJWT(foundUser.ID)
+	token, _ := utils.GenerateJWTwithIDUsernameName(foundUser.ID, foundUser.Username, foundUser.Name)
 	return token, nil
 }
 
@@ -128,7 +130,7 @@ func (a *authService) loginByMobileNumber(mobileNumber uint64, password string) 
 	if !utils.CheckPasswordHash(password, foundUser.Password) {
 		return "", errors.New("invalid password")
 	}
-	token, _ := utils.GenerateJWT(foundUser.ID)
+	token, _ := utils.GenerateJWTwithIDUsernameName(foundUser.ID, foundUser.Username, foundUser.Name)
 	return token, nil
 }
 

@@ -11,7 +11,7 @@ import (
 type UserRepository interface {
 	// Define methods for user repository here
 	Create(ctx context.Context, user *model.User) error
-	FindByID(ctx context.Context, id int) (*model.User, error)
+	FindByID(ctx context.Context, id int64) (*model.User, error)
 	FindByMobileNumber(ctx context.Context, mobileNumber uint64) (*model.User, error)
 	FindByUsername(ctx context.Context, username string) (*model.User, error)
 	FindByEmail(ctx context.Context, email string) (*model.User, error)
@@ -34,7 +34,7 @@ func (u *userRepository) Create(ctx context.Context, user *model.User) error {
 }
 
 // FindByID implements UserRepository.
-func (u *userRepository) FindByID(ctx context.Context, id int) (*model.User, error) {
+func (u *userRepository) FindByID(ctx context.Context, id int64) (*model.User, error) {
 	var user model.User
 	query := `SELECT id, name, mobile_number, email, password_hash FROM users WHERE id=$1`
 	err := u.db.Pool.QueryRow(ctx, query, id).

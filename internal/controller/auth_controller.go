@@ -17,6 +17,16 @@ func NewAuthController(authService service.AuthService) *AuthController {
 		AuthService: authService,
 	}
 }
+
+// Register godoc
+// @Summary Register a new user
+// @Description Creates a new user account
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /auth/register [post]
 func (controller *AuthController) Register(context *gin.Context) {
 	// Registration handler logic goes here
 	var requestBody struct {
@@ -48,6 +58,15 @@ func (controller *AuthController) Register(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"message": "User registered successfully"})
 }
 
+// Login godoc
+// @Summary Login user
+// @Description Logs in a user and returns JWT
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Router /auth/login [post]
 func (controller *AuthController) Login(context *gin.Context) {
 	// Login handler logic goes here
 	var requestBody struct {

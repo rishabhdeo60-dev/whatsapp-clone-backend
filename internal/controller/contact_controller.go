@@ -18,19 +18,27 @@ func NewContactController(service service.ContactService) *ContactController {
 	}
 }
 
-// Adds a new contact
+// AddContact godoc
+// @Summary Add a contact
+// @Description Adds a contact to the user's list
+// @Tags Contacts
+// @Accept json
+// @Produce json
+// @Param contact body map[string]int true "Contact ID"
+// @Success 200 {object} map[string]string
+// @Router /contacts/add [post]
 func (cc *ContactController) AddContact(context *gin.Context) {
 	var requestBody struct {
-		UserID    int `json:"user_id"`
-		ContactID int `json:"contact_id"`
+		ContactID int64 `json:"contact_id"`
 	}
 
 	if err := context.ShouldBindJSON(&requestBody); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Request"})
 		return
 	}
+	userID := context.Keys["userID"].(int64)
 
-	err := cc.service.AddContact(requestBody.UserID, requestBody.ContactID)
+	err := cc.service.AddContact(userID, requestBody.ContactID)
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -39,37 +47,57 @@ func (cc *ContactController) AddContact(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"message": "Successfully added the contact"})
 }
 
-// Retrieves contacts for a user
+// GetContacts godoc
+// @Summary Get all contacts
+// @Description Retrieves all contacts for a user
+// @Tags Contacts
+// @Accept json
+// @Produce json
+// @Param user_id query int true "User ID"
+// @Success 200 {object} map[string]interface{}
+// @Router /contacts/list [get]
 func (cc *ContactController) GetContacts(context *gin.Context) {
-	var requestBody struct {
-		UserID int `json:"user_id"`
-	}
-	if err := context.ShouldBindQuery(&requestBody); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user_id"})
-		return
-	}
+	// var requestBody struct {
+	// 	UserID int `json:"user_id"`
+	// }
+	// if err := context.ShouldBindQuery(&requestBody); err != nil {
+	// 	context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user_id"})
+	// 	return
+	// }
 
-	contacts, err := cc.service.GetContacts(requestBody.UserID)
+	// log.Printf("User id from context is: %v", context.Keys["userID"])
+	userID := context.Keys["userID"].(int64)
+
+	// log.Printf("User id is: %d", userID)
+	contacts, err := cc.service.GetContacts(userID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	context.JSON(http.StatusOK, contacts)
+	context.JSON(http.StatusOK, gin.H{"contacts": contacts})
 }
 
-// Deletes a contact
+// DeleteContact godoc
+// @Summary Delete a contact
+// @Description Deletes a contact from the user's list
+// @Tags Contacts
+// @Accept json
+// @Produce json
+// @Param contact body map[string]int true "Contact ID"
+// @Success 200 {object} map[string]string
+// @Router /contacts/remove/:id [delete]
 func (cc *ContactController) DeleteContact(context *gin.Context) {
 	var requestBody struct {
-		UserID    int `json:"user_id"`
-		ContactID int `json:"contact_id"`
+		ContactID int64 `json:"contact_id"`
 	}
 	if err := context.ShouldBindJSON(&requestBody); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Request"})
 		return
 	}
+	userID := context.Keys["userID"].(int64)
 
-	err := cc.service.RemoveContact(requestBody.UserID, requestBody.ContactID)
+	err := cc.service.RemoveContact(userID, requestBody.ContactID)
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

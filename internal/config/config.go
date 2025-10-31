@@ -12,6 +12,7 @@ type AppConfig struct {
 	RedisConfig *RedisConfig
 	KafkaConfig *KafkaConfig
 	WSConfig    *WebSocketConfig
+	JWTConfig   *JWTConfig
 }
 
 func (config *AppConfig) LoadConfig() *AppConfig {
@@ -36,10 +37,15 @@ func (config *AppConfig) LoadConfig() *AppConfig {
 		log.Fatal("Failed to load websocket configuration:", err)
 	}
 
+	if err := config.JWTConfig.Load(); err != nil {
+		log.Fatal("Failed to load JWT configuration:", err)
+	}
+
 	return &AppConfig{
 		DBConfig:    config.DBConfig,
 		RedisConfig: config.RedisConfig,
 		KafkaConfig: config.KafkaConfig,
 		WSConfig:    config.WSConfig,
+		JWTConfig:   config.JWTConfig,
 	}
 }

@@ -24,9 +24,10 @@ func AuthRoutes(router *gin.Engine, authController *controller.AuthController) {
 // 	}
 // }
 
-func ContactRoutes(router *gin.Engine, contactController *controller.ContactController) {
+func ContactRoutes(router *gin.Engine, contactController *controller.ContactController, authMiddleware gin.HandlerFunc) {
 	// Route registration logic goes here
 	contacts_api := router.Group("/api/v1/contacts")
+	contacts_api.Use(authMiddleware)
 	{
 		contacts_api.POST("/add", contactController.AddContact)
 		contacts_api.GET("/list", contactController.GetContacts)

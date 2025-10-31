@@ -34,6 +34,7 @@ func (db *DB) RunMigrations(ctx context.Context) {
 			UNIQUE(user_id, contact_id)
 		);
 		`,
+		`ALTER TABLE contacts ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;`,
 	}
 
 	for _, q := range queries {

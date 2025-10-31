@@ -17,11 +17,11 @@ import (
 // Mock ContactService implementing interface
 type MockContactService struct{ service.ContactService }
 
-func (m *MockContactService) AddContact(uid, cid int) error { return nil }
-func (m *MockContactService) GetContacts(uid int) ([]*model.Contact, error) {
+func (m *MockContactService) AddContact(uid, cid int64) error { return nil }
+func (m *MockContactService) GetContacts(uid int64) ([]*model.Contact, error) {
 	return []*model.Contact{{ID: 2, ContactID: 3}}, nil
 }
-func (m *MockContactService) RemoveContact(uid, cid int) error { return nil }
+func (m *MockContactService) RemoveContact(uid, cid int64) error { return nil }
 
 func TestAddContactHandler(t *testing.T) {
 	gin.SetMode(gin.TestMode)

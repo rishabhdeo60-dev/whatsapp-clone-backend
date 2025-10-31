@@ -10,9 +10,9 @@ import (
 
 type ContactService interface {
 	// Define contact service methods here
-	AddContact(userID, contactID int) error
-	GetContacts(userID int) ([]*model.Contact, error)
-	RemoveContact(userID, contactID int) error
+	AddContact(userID, contactID int64) error
+	GetContacts(userID int64) ([]*model.Contact, error)
+	RemoveContact(userID, contactID int64) error
 }
 
 type contactService struct {
@@ -22,7 +22,7 @@ type contactService struct {
 }
 
 // Implement contact service methods here
-func (service *contactService) AddContact(userID, contactID int) error {
+func (service *contactService) AddContact(userID, contactID int64) error {
 	if userID == contactID {
 		return errors.New("cannot add yourself as a contact")
 	}
@@ -35,11 +35,11 @@ func (service *contactService) AddContact(userID, contactID int) error {
 	return service.contactRepo.AddContact(context.Background(), userID, contactID)
 }
 
-func (service *contactService) GetContacts(userID int) ([]*model.Contact, error) {
+func (service *contactService) GetContacts(userID int64) ([]*model.Contact, error) {
 	return service.contactRepo.GetContacts(context.Background(), userID)
 }
 
-func (service *contactService) RemoveContact(userID, contactID int) error {
+func (service *contactService) RemoveContact(userID, contactID int64) error {
 	if userID == contactID {
 		return errors.New("cannot remove yourself as a contact")
 	}
