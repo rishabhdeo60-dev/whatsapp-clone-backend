@@ -3,15 +3,16 @@ package service
 import (
 	"context"
 	"errors"
+	"log"
 
-	"github.com/rishabhdeo60-dev/whatsapp-clone/internal/model"
+	"github.com/rishabhdeo60-dev/whatsapp-clone/internal/dao"
 	"github.com/rishabhdeo60-dev/whatsapp-clone/internal/repository"
 )
 
 type ContactService interface {
 	// Define contact service methods here
 	AddContact(userID, contactID int64) error
-	GetContacts(userID int64) ([]*model.Contact, error)
+	GetContacts(userID int64) ([]*dao.ContactDAO, error)
 	RemoveContact(userID, contactID int64) error
 }
 
@@ -23,6 +24,7 @@ type contactService struct {
 
 // Implement contact service methods here
 func (service *contactService) AddContact(userID, contactID int64) error {
+	log.Printf("userID is: %d and contactID is: %d", userID, contactID)
 	if userID == contactID {
 		return errors.New("cannot add yourself as a contact")
 	}
@@ -35,7 +37,7 @@ func (service *contactService) AddContact(userID, contactID int64) error {
 	return service.contactRepo.AddContact(context.Background(), userID, contactID)
 }
 
-func (service *contactService) GetContacts(userID int64) ([]*model.Contact, error) {
+func (service *contactService) GetContacts(userID int64) ([]*dao.ContactDAO, error) {
 	return service.contactRepo.GetContacts(context.Background(), userID)
 }
 

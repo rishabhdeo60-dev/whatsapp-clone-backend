@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"log"
 	"os"
 	"time"
 
@@ -30,6 +31,15 @@ func GenerateJWTwithIDUsernameName(userID int64, username, name string) (string,
 		"name":     name,
 		"exp":      time.Now().Add(time.Hour * 72).Unix(),
 	})
+	log.Printf("Generating JWT for userID: %d, username: %s, name: %s", userID, username, name)
+	log.Printf("JWT Token before signing: %v", token)
+	log.Printf("JWT Claims: %v", token.Claims)
+	log.Printf("JWT Claims user_id type is: %T", token.Claims.(jwt.MapClaims)["user_id"])
+	log.Printf("JWT Claims username type is: %T", token.Claims.(jwt.MapClaims)["username"])
+	log.Printf("JWT Claims name type is: %T", token.Claims.(jwt.MapClaims)["name"])
+	log.Printf("JWT Signing Method: %v", token.Method)
+	log.Printf("JWT Secret: %s", os.Getenv("JWT_SECRET"))
+	log.Printf("Signing the token...")
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
 		return "", err
@@ -37,20 +47,46 @@ func GenerateJWTwithIDUsernameName(userID int64, username, name string) (string,
 	return tokenString, nil
 }
 
-func ParseJWT(tokenString, JwtSecret string) (int64, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+func ParseJWT(tokenString, JwtSecret string) (int64, string, string, error) {
+	// log.Printf("Inside of ParseJWT function")
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
+		// log.Printf("Parsing JWT token")
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			// log.Printf("Unexpected signing method: %v", token.Header["alg"])
 			return nil, jwt.ErrSignatureInvalid
 		}
 		return []byte(JwtSecret), nil
 	})
+	// log.Printf("Token after parsing: %v", token)
+	// log.Printf("error after parsing: %v", err)
 	if err != nil {
-		return 0, err
+		return 0, "", "", err
 	}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		if userID, ok := claims["user_id"].(float64); ok {
-			return int64(userID), nil
+		// log.Printf("Inside of logic to claim fields from jwt Token")
+		// exp, foundExp := claims["exp"].(float64)
+		// log.Printf("Found exp is %t and exp is: %f", foundExp, exp)
+		userID := int64(claims["user_id"].(float64))
+		_, foundUserId := claims["user_id"].(float64)
+		// log.Printf("user_id type is %T: and value is: %d", claims["user_id"], int64(claims["user_id"].(float64)))
+		// log.Printf("FoundUserID is %t and userID is: %d", foundUserId, userID)
+		username, foundUsername := claims["username"].(string)
+		// log.Printf("FoundUsername is %t and username is: %s", foundUsername, username)
+		name, foundName := claims["name"].(string)
+		// log.Printf("FoundName is %t and name is: %s", foundName, name)
+
+		if foundUserId && foundUsername && foundName {
+			// log.Printf("UserID from token claims: %d", userID)
+			// log.Printf("Username from token claims: %s", username)
+			// log.Printf("Name from token claims: %s", name)
+			return userID, username, name, nil
+		} else {
+			log.Printf("One or more claims not found or of incorrect type")
+			return 0, "", "", jwt.ErrInvalidKey
 		}
+		// if userID, ok := claims["user_id"].(int64); ok {
+		// 	return userID, nil
+		// }
 	}
-	return 0, jwt.ErrInvalidKey
+	return 0, "", "", jwt.ErrInvalidKey
 }

@@ -36,7 +36,7 @@ func (am *AuthMiddleware) RequireAuth() gin.HandlerFunc {
 			return
 		}
 
-		userID, err := utils.ParseJWT(tokenString, am.JWTSecret)
+		userID, username, name, err := utils.ParseJWT(tokenString, am.JWTSecret)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token: " + err.Error()})
 			c.Abort()
@@ -45,7 +45,9 @@ func (am *AuthMiddleware) RequireAuth() gin.HandlerFunc {
 
 		//Extract user ID from token claims and set it in context
 		// log.Printf("Authenticated user ID: %d", userID)
-		c.Set("userID", userID)
+		c.Set("user_id", userID)
+		c.Set("username", username)
+		c.Set("name", name)
 		c.Next()
 	}
 }

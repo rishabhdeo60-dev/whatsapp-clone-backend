@@ -4,14 +4,14 @@ import (
 	"context"
 	"log"
 
+	"github.com/rishabhdeo60-dev/whatsapp-clone/internal/dao"
 	"github.com/rishabhdeo60-dev/whatsapp-clone/internal/db"
-	"github.com/rishabhdeo60-dev/whatsapp-clone/internal/model"
 )
 
 type ContactRepository interface {
 	// Define methods for contact repository
 	AddContact(ctx context.Context, userID, contactID int64) error
-	GetContacts(ctx context.Context, userID int64) ([]*model.Contact, error)
+	GetContacts(ctx context.Context, userID int64) ([]*dao.ContactDAO, error)
 	RemoveContact(ctx context.Context, userID, contactID int64) error
 }
 
@@ -27,9 +27,9 @@ func (r *contactRepository) AddContact(ctx context.Context, userID, contactID in
 	return err
 }
 
-func (r *contactRepository) GetContacts(ctx context.Context, userID int64) ([]*model.Contact, error) {
+func (r *contactRepository) GetContacts(ctx context.Context, userID int64) ([]*dao.ContactDAO, error) {
 	// Implementation for retrieving contacts from the database
-	query := `SELECT contact_id, created_at, updated_at FROM contacts WHERE user_id = $1`
+	query := `SELECT user_id, contact_id, created_at, updated_at FROM contacts WHERE user_id = $1`
 	rows, err := r.db.Pool.Query(ctx, query, userID)
 	if err != nil {
 		defer rows.Close()
@@ -37,11 +37,11 @@ func (r *contactRepository) GetContacts(ctx context.Context, userID int64) ([]*m
 	}
 	// log.Printf("Retrieved rows: %+v\n", rows.CommandTag().RowsAffected())
 
-	var contacts []*model.Contact
+	var contacts []*dao.ContactDAO
 	for rows.Next() {
 		// log.Printf("Inside the for loop line: 42")
-		var c model.Contact
-		if err := rows.Scan(&c.ContactID, &c.CreatedAt, &c.UpdatedAt); err != nil {
+		var c dao.ContactDAO
+		if err := rows.Scan(&c.UserID, &c.ContactID, &c.CreatedAt, &c.UpdatedAt); err != nil {
 			return nil, err
 		}
 		log.Printf("Retrieved contact: %+v\n", c)

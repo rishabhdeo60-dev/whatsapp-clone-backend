@@ -28,20 +28,20 @@ type authService struct {
 func (service *authService) Register(user *model.User) error {
 	// Implement registration logic here
 	existingUser, err := service.userRepo.FindByMobileNumber(context.Background(), user.MobileNumber)
-	if err != nil {
-		return err
+	if err != nil && err.Error() == "no rows in result set" {
+		newUser := &model.User{
+			Username:     user.Username,
+			MobileNumber: user.MobileNumber,
+			Email:        user.Email,
+			Name:         user.Name,
+			Password:     user.Password,
+		}
+		return service.userRepo.Create(context.Background(), newUser)
 	} else if existingUser != nil {
 		return errors.New("user with mobile number already exists: " + fmt.Sprint(existingUser.MobileNumber))
+	} else {
+		return err
 	}
-	newUser := &model.User{
-		Username:     user.Username,
-		MobileNumber: user.MobileNumber,
-		Email:        user.Email,
-		Name:         user.Name,
-		Password:     user.Password,
-	}
-
-	return service.userRepo.Create(context.Background(), newUser)
 }
 
 func (service *authService) Login(Mobile_username_email string, password string) (string, error) {
@@ -106,6 +106,7 @@ func (a *authService) loginByUsername(username string, password string) (string,
 	if !utils.CheckPasswordHash(password, foundUser.Password) {
 		return "", errors.New("invalid password")
 	}
+	log.Printf("Founded user is: %v\n", foundUser)
 	log.Printf("User %s logged in successfully and user ID is: %d", foundUser.Username, foundUser.ID)
 	token, _ := utils.GenerateJWTwithIDUsernameName(foundUser.ID, foundUser.Username, foundUser.Name)
 	return token, nil
@@ -118,6 +119,7 @@ func (a *authService) loginByEmail(email string, password string) (string, error
 	if !utils.CheckPasswordHash(password, foundUser.Password) {
 		return "", errors.New("invalid password: " + password + " hashed password: " + foundUser.Password + " email: " + email)
 	}
+	log.Printf("User %s logged in successfully and user ID is: %d", foundUser.Email, foundUser.ID)
 	token, _ := utils.GenerateJWTwithIDUsernameName(foundUser.ID, foundUser.Username, foundUser.Name)
 	return token, nil
 }
@@ -130,6 +132,7 @@ func (a *authService) loginByMobileNumber(mobileNumber uint64, password string) 
 	if !utils.CheckPasswordHash(password, foundUser.Password) {
 		return "", errors.New("invalid password")
 	}
+	log.Printf("User %d logged in successfully and user ID is: %d", foundUser.MobileNumber, foundUser.ID)
 	token, _ := utils.GenerateJWTwithIDUsernameName(foundUser.ID, foundUser.Username, foundUser.Name)
 	return token, nil
 }

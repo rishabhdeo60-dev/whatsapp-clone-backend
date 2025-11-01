@@ -36,7 +36,12 @@ func (cc *ContactController) AddContact(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Request"})
 		return
 	}
-	userID := context.Keys["userID"].(int64)
+	userID := context.Keys["user_id"].(int64)
+	// username := context.Keys["username"].(string)
+	// name := context.Keys["name"].(string)
+	// log.Printf("UserID from context is: %d", userID)
+	// log.Printf("Username from context is: %s", username)
+	// log.Printf("Name from context is: %s", name)
 
 	err := cc.service.AddContact(userID, requestBody.ContactID)
 
@@ -65,8 +70,12 @@ func (cc *ContactController) GetContacts(context *gin.Context) {
 	// 	return
 	// }
 
-	// log.Printf("User id from context is: %v", context.Keys["userID"])
-	userID := context.Keys["userID"].(int64)
+	userID := context.Keys["user_id"].(int64)
+	// username := context.Keys["username"].(string)
+	// name := context.Keys["name"].(string)
+	// log.Printf("UserID from context is: %d", userID)
+	// log.Printf("Username from context is: %s", username)
+	// log.Printf("Name from context is: %s", name)
 
 	// log.Printf("User id is: %d", userID)
 	contacts, err := cc.service.GetContacts(userID)
@@ -96,6 +105,11 @@ func (cc *ContactController) DeleteContact(context *gin.Context) {
 		return
 	}
 	userID := context.Keys["userID"].(int64)
+	// username := context.Keys["username"].(string)
+	// name := context.Keys["name"].(string)
+	// log.Printf("UserID from context is: %d", userID)
+	// log.Printf("Username from context is: %s", username)
+	// log.Printf("Name from context is: %s", name)
 
 	err := cc.service.RemoveContact(userID, requestBody.ContactID)
 

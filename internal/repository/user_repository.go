@@ -36,9 +36,9 @@ func (u *userRepository) Create(ctx context.Context, user *model.User) error {
 // FindByID implements UserRepository.
 func (u *userRepository) FindByID(ctx context.Context, id int64) (*model.User, error) {
 	var user model.User
-	query := `SELECT id, name, mobile_number, email, password_hash FROM users WHERE id=$1`
+	query := `SELECT id, username, name, mobile_number, email, password_hash FROM users WHERE id=$1`
 	err := u.db.Pool.QueryRow(ctx, query, id).
-		Scan(&user.ID, &user.Name, &user.MobileNumber, &user.Email, &user.Password)
+		Scan(&user.ID, &user.Username, &user.Name, &user.MobileNumber, &user.Email, &user.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -48,9 +48,9 @@ func (u *userRepository) FindByID(ctx context.Context, id int64) (*model.User, e
 // FindByMobileNumber implements UserRepository.
 func (u *userRepository) FindByMobileNumber(ctx context.Context, mobileNumber uint64) (*model.User, error) {
 	var user model.User
-	query := `SELECT id, name, mobile_number, email, password_hash FROM users WHERE mobile_number=$1`
+	query := `SELECT id, username, name, mobile_number, email, password_hash FROM users WHERE mobile_number=$1`
 	err := u.db.Pool.QueryRow(ctx, query, mobileNumber).
-		Scan(&user.ID, &user.Name, &user.MobileNumber, &user.Email, &user.Password)
+		Scan(&user.ID, &user.Username, &user.Name, &user.MobileNumber, &user.Email, &user.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -60,9 +60,9 @@ func (u *userRepository) FindByMobileNumber(ctx context.Context, mobileNumber ui
 // FindByUsername implements UserRepository.
 func (u *userRepository) FindByUsername(ctx context.Context, username string) (*model.User, error) {
 	var user model.User
-	query := `SELECT id, name, mobile_number, email, password_hash FROM users WHERE username=$1`
+	query := `SELECT id, username, name, mobile_number, email, password_hash FROM users WHERE username=$1`
 	err := u.db.Pool.QueryRow(ctx, query, username).
-		Scan(&user.ID, &user.Name, &user.MobileNumber, &user.Email, &user.Password)
+		Scan(&user.ID, &user.Username, &user.Name, &user.MobileNumber, &user.Email, &user.Password)
 	if err != nil {
 		return nil, err
 	}
